@@ -9,12 +9,10 @@ from engine.pygame_adapter import (
 class Player(Character):
     def __init__(self, attack_power=1, heal_rate=1):
         super().__init__(hp=50, attack_power=attack_power, heal_rate=heal_rate)
-        # self.surf, self.rect = adapter.load_image('./gui/static/punch.png')
+        # self.surf, self.rect = adapter.load_image('../gui/static/punch.png')
         self.surf, self.rect = adapter.create_surface((0, 0))
         adapter.resize(self.surf, (128, 128))
         self.rect.topleft = (150, 50)
-        adapter.bind_screen(self.surf, [self.rect])
-        adapter.update_screen()
 
         screen_size = adapter.get_screen_size()
         width, height = 300, 20
@@ -29,10 +27,11 @@ class Player(Character):
 
     def attack(self, event, target):
         if event.type != KEYUP:
-            return
+            return None
         if event.key == K_RETURN:
             target.hp -= self.attack_power
-            print('player attack, boss hp', target.hp)
+            spark = target.be_hit()
+            return spark
 
     def die(self):
         print('You die')

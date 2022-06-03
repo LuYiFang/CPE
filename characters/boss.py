@@ -1,8 +1,9 @@
+from time import time
 from characters.base import Character
 from engine.pygame_adapter import (
     adapter,
-    K_RETURN,
 )
+from gui.special_effects import HitSpark
 
 
 class Boss(Character):
@@ -10,9 +11,27 @@ class Boss(Character):
         super().__init__(hp=100, attack_power=attack_power, heal_rate=heal_rate)
         self.attack_speed = attack_speed
         self.recover_speed = recover_speed
-        self.surf, self.rect = adapter.load_image('./gui/static/boss_normal.png')
-        adapter.bind_screen(self.surf, [self.rect])
-        adapter.update_screen()
+
+        screen_size = adapter.get_screen_size()
+        width = 300
+        middle_x = screen_size.current_w / 2 - width / 2
+
+        self.surf, self.rect = adapter.load_image(
+            '../gui/static/boss_normal.png',
+            center=(
+                screen_size.current_w / 2,
+                screen_size.current_h / 2
+            ),
+        )
+
+        self.surf_hurt, self.rect_hurt = adapter.load_image(
+            '../gui/static/boss_hit.png',
+            center=(
+                screen_size.current_w / 2,
+                screen_size.current_h / 2
+            ),
+        )
+
         self.attack_event_id = adapter.create_time_event(
             self.speed_to_ms(self.attack_speed)
         )
@@ -22,11 +41,11 @@ class Boss(Character):
         # self.hp_rect, self.inner_pos = self.set_hp_bar()
         # self.update_hp_bar()
 
-        screen_size = adapter.get_screen_size()
-        width = 300
-        middle_x = screen_size.current_w / 2 - width / 2
         self.hp_rect_tmp = self.set_hp_bar_tmp((middle_x, 10), (width, 20))
         self.update_hp_tmp()
+
+        self.is_hit = False
+        self.timer = time()
 
     def speed_to_ms(self, speed):
         return round(1000 / speed)
@@ -34,10 +53,24 @@ class Boss(Character):
     def attack(self, event, target):
         if event.type == self.attack_event_id:
             target.hp -= self.attack_power
-            print('boss attack, player hp:', target.hp)
 
     def be_hit(self):
-        pass
+        spark = HitSpark(self.rect.topleft, self.rect.size)
+        self.is_hit = True
+        self.timer = time()
+        return spark
+
+    def blink(self):
+        adapter.bind_screen(self.surf_hurt, self.rect_hurt)
+        if time() - self.timer >= 500 / 1000:
+            self.is_hit = False
+
+    def update(self):
+        super().update()
+        if not self.is_hit:
+            adapter.bind_screen(self.surf, self.rect)
+        else:
+            self.blink()
 
     def die(self):
         print('You win')

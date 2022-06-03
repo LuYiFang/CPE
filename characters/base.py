@@ -24,14 +24,11 @@ class CharacterAbstract(ABC):
 
 class Character(CharacterAbstract, adapter.collision_object()):
     def __init__(self, hp, attack_power=1, heal_rate=1, **kwargs):
+        super().__init__()
         self.attack_power = attack_power
         self.heal_rate = heal_rate
         self.full_hp = hp
         self.hp = hp
-        self.surf = None
-        self.rect = None
-
-
 
         self.hp_color = (32, 230, 91, 90)
         self.hp_back_color = (255, 255, 255)

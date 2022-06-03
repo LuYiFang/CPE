@@ -19,6 +19,7 @@ class World:
     def new_game(self):
         level = self.current_level()
         level.reset()
+
         self.count_down()
         self.run(level)
 
@@ -55,7 +56,15 @@ class World:
 
                 level.player_move(event, level.boss)
             level.update()
+
+            for sprite in level.exclude_boss_sprites:
+                adapter.bind_screen(sprite.surf, sprite.rect)
+
+            adapter.update_display()
+
+            level.spark_sprites.update()
             adapter.update_screen()
+
             if level.is_end():
                 running = False
         self.end_game()

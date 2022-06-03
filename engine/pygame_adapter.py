@@ -18,6 +18,7 @@ from engine.base import GameFrameworkBase
 class PygameAdapter(GameFrameworkBase):
     def __init__(self):
         self.screen = None
+        self.screen_rgb = None
 
     def init(self):
         pygame.init()
@@ -25,6 +26,10 @@ class PygameAdapter(GameFrameworkBase):
     def set_screen(self, width=800, height=600, rgb=(255, 255, 255)):
         self.screen = pygame.display.set_mode((width, height))
         self.screen.fill(rgb)
+        self.screen_rgb = rgb
+
+    def update_screen(self):
+        self.screen.fill(self.screen_rgb)
 
     def get_screen(self):
         return self.screen
@@ -74,21 +79,22 @@ class PygameAdapter(GameFrameworkBase):
         pygame.draw.rect(self.screen, healthC, rect)
 
     def load_image(self, path, rgb=(255, 255, 255), **kwargs):
-        # surf = pygame.image.load(path).convert()
-        surf = pygame.image.load(path)
+        surf = pygame.image.load(path).convert()
         surf.set_colorkey(rgb, RLEACCEL)
         return surf, surf.get_rect(**kwargs)
 
     def resize(self, surface, size):
-        pygame.transform.scale(surface, size)
+        return pygame.transform.scale(surface, size)
 
-    def update_screen(self):
+    def delay(self, ms):
+        pygame.time.delay(ms)
+
+    def update_display(self):
         # pygame.display.flip()
         pygame.display.update()
 
-    def bind_screen(self, sub_object, rect_list: list):
-        for rect in rect_list:
-            self.screen.blit(sub_object, rect)
+    def bind_screen(self, sub_object, rect, *args):
+        self.screen.blit(sub_object, rect, *args)
 
     def collision_object(self):
         return pygame.sprite.Sprite
@@ -109,6 +115,8 @@ class PygameAdapter(GameFrameworkBase):
         clock = pygame.time.Clock()
         clock.tick(frame_rate)
 
+    def get_ticks(self):
+        pygame.time.get_ticks()
 
 
 adapter = PygameAdapter()
