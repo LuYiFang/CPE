@@ -47,6 +47,8 @@ class Boss(Character):
         self.is_hit = False
         self.timer = time()
 
+        self.blink_rate = 200 / 1000
+
     def speed_to_ms(self, speed):
         return round(1000 / speed)
 
@@ -62,7 +64,7 @@ class Boss(Character):
 
     def blink(self):
         adapter.bind_screen(self.surf_hurt, self.rect_hurt)
-        if time() - self.timer >= 500 / 1000:
+        if time() - self.timer >= self.blink_rate:
             self.is_hit = False
 
     def update(self):
@@ -76,4 +78,4 @@ class Boss(Character):
         print('You win')
 
     def recover(self):
-        pass
+        self.hp += self.heal_rate

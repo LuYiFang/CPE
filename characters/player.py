@@ -3,6 +3,7 @@ from engine.pygame_adapter import (
     adapter,
     K_RETURN,
     KEYUP,
+    K_c,
 )
 
 
@@ -36,5 +37,9 @@ class Player(Character):
     def die(self):
         print('You die')
 
-    def recover(self):
-        pass
+    def recover(self, event):
+        if event.type != KEYUP:
+            return None
+        if event.key == K_c:
+            self.hp += self.heal_rate
+

@@ -77,7 +77,7 @@ class Character(CharacterAbstract, adapter.collision_object()):
     def die(self):
         pass
 
-    def recover(self):
+    def recover(self, *args, **kwargs):
         pass
 
     def is_dead(self):

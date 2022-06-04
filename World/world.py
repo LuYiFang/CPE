@@ -1,4 +1,3 @@
-from time import sleep
 from World.level import (
     LevelBase,
     Level1,
@@ -6,17 +5,25 @@ from World.level import (
 )
 
 from engine.pygame_adapter import adapter
+from gui.menu import Menu
 
 
 class World:
     def __init__(self):
         self.current_difficulty = 1
-        self.levels = {'Level1': Level1}
-        self.current_level = Level2
+        self.max_difficulty = 10
+        self.levels = [Level1, Level2]
+        self.max_level = len(self.levels)
+        self.current_level = Level1
         adapter.init()
         adapter.set_screen()
+        screen_size = adapter.get_screen_size()
+        self.menu = Menu(
+            screen_size.current_w, screen_size.current_h,
+            self.new_game, self.change_level, self.change_difficulty, self.exit
+        )
 
-    def new_game(self):
+    def new_game(self, *args, **kwargs):
         level = self.current_level()
         level.reset()
 
@@ -26,19 +33,26 @@ class World:
     def end_game(self):
         print('End')
         self.next_level()
-        self.set_config()
+        self.show_menu()
 
     def exit(self):
-        pass
+        adapter.exit()
 
-    def change_difficulty(self, level):
-        pass
+    def change_level(self, value, level):
+        if level > self.max_level or level < 1:
+            return
+        self.current_level = self.levels[level-1]
+
+    def change_difficulty(self, value, difficulty):
+        if difficulty > self.max_difficulty or difficulty < 1:
+            return
+        self.current_difficulty = difficulty
 
     def next_level(self):
         pass
 
-    def set_config(self):
-        pass
+    def show_menu(self):
+        self.menu.launch_menu(adapter.get_screen())
 
     def count_down(self):
         pass
@@ -72,4 +86,4 @@ class World:
 
 if __name__ == '__main__':
     world = World()
-    world.new_game()
+    world.show_menu()

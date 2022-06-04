@@ -1,3 +1,4 @@
+import sys
 import pygame
 from pygame.locals import (
     KEYDOWN,
@@ -12,6 +13,8 @@ from pygame.locals import (
     K_RIGHT,
     K_c,
 )
+import pygame_menu
+from pygame_menu.themes import THEME_SOLARIZED
 from engine.base import GameFrameworkBase
 
 
@@ -48,7 +51,7 @@ class PygameAdapter(GameFrameworkBase):
             if event.key == K_ESCAPE:
                 return False
         elif event.type == QUIT:
-            return False
+            self.exit()
         return True
 
     def create_surface(self, size, rgb=(255, 255, 255)):
@@ -117,6 +120,16 @@ class PygameAdapter(GameFrameworkBase):
 
     def get_ticks(self):
         pygame.time.get_ticks()
+
+    def create_menu(self, title, width, height, **kwargs):
+        return pygame_menu.Menu(title, width, height, **kwargs)
+
+    def menu_exit(self):
+        pygame_menu.events.EXIT
+
+    def exit(self):
+        pygame.quit()
+        sys.exit()
 
 
 adapter = PygameAdapter()

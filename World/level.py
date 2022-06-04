@@ -33,8 +33,11 @@ class LevelBase(LevelAbstract):
     def boss_move(self, *args, **kwargs):
         pass
 
-    def player_move(self, *arg, **kwargs):
-        pass
+    def player_move(self, event, target):
+        spark = self.player.attack(event, target)
+        if spark is not None:
+            self.spark_sprites.add(spark)
+            self.exclude_boss_sprites.add(spark)
 
     def reset(self):
         self.player.reset()
@@ -63,12 +66,6 @@ class Level1(LevelBase):
         super().__init__()
         self.player = Player(attack_power=10)
 
-    def boss_move(self, event, target):
-        pass
-
-    def player_move(self, event, target):
-        self.player.attack(event, target)
-
     def reset(self):
         pass
 
@@ -80,12 +77,6 @@ class Level2(LevelBase):
 
     def boss_move(self, event, target):
         self.boss.attack(event, target)
-
-    def player_move(self, event, target):
-        spark = self.player.attack(event, target)
-        if spark is not None:
-            self.spark_sprites.add(spark)
-            self.exclude_boss_sprites.add(spark)
 
     def reset(self):
         pass
