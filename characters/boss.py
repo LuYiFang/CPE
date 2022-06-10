@@ -7,8 +7,8 @@ from gui.special_effects import HitSpark
 
 
 class Boss(Character):
-    def __init__(self, attack_speed, recover_speed, attack_power=1, heal_rate=1):
-        super().__init__(hp=100, attack_power=attack_power, heal_rate=heal_rate)
+    def __init__(self, attack_speed, recover_speed, attack_power=1, heal_rate=1, hp=100):
+        super().__init__(hp=hp, attack_power=attack_power, heal_rate=heal_rate)
         self.attack_speed = attack_speed
         self.recover_speed = recover_speed
 
@@ -17,7 +17,7 @@ class Boss(Character):
         middle_x = screen_size.current_w / 2 - width / 2
 
         self.surf, self.rect = adapter.load_image(
-            '../gui/static/boss_normal.png',
+            'src/static/boss_normal.png',
             center=(
                 screen_size.current_w / 2,
                 screen_size.current_h / 2
@@ -25,7 +25,7 @@ class Boss(Character):
         )
 
         self.surf_hurt, self.rect_hurt = adapter.load_image(
-            '../gui/static/boss_hit.png',
+            'src/static/boss_hit.png',
             center=(
                 screen_size.current_w / 2,
                 screen_size.current_h / 2
@@ -34,6 +34,9 @@ class Boss(Character):
 
         self.attack_event_id = adapter.create_time_event(
             self.speed_to_ms(self.attack_speed)
+        )
+        self.recover_event_id = adapter.create_time_event(
+            self.speed_to_ms(self.recover_speed)
         )
 
         self.hp_color = (250, 140, 22, 98)
@@ -77,5 +80,8 @@ class Boss(Character):
     def die(self):
         print('You win')
 
-    def recover(self):
-        self.hp += self.heal_rate
+    def recover(self, event):
+        if event.type == self.recover_event_id:
+            self.hp += self.heal_rate
+            if self.hp > self.full_hp:
+                self.hp = self.full_hp

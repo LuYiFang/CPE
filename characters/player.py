@@ -8,9 +8,9 @@ from engine.pygame_adapter import (
 
 
 class Player(Character):
-    def __init__(self, attack_power=1, heal_rate=1):
-        super().__init__(hp=50, attack_power=attack_power, heal_rate=heal_rate)
-        # self.surf, self.rect = adapter.load_image('../gui/static/punch.png')
+    def __init__(self, attack_power=1, heal_rate=1, hp=50):
+        super().__init__(hp=hp, attack_power=attack_power, heal_rate=heal_rate)
+        # self.surf, self.rect = adapter.load_image('src/static/punch.png')
         self.surf, self.rect = adapter.create_surface((0, 0))
         adapter.resize(self.surf, (128, 128))
         self.rect.topleft = (150, 50)
@@ -42,4 +42,5 @@ class Player(Character):
             return None
         if event.key == K_c:
             self.hp += self.heal_rate
-
+            if self.hp > self.full_hp:
+                self.hp = self.full_hp

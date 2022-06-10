@@ -22,6 +22,7 @@ class PygameAdapter(GameFrameworkBase):
     def __init__(self):
         self.screen = None
         self.screen_rgb = None
+        self.event_count = 1
 
     def init(self):
         pygame.init()
@@ -39,6 +40,10 @@ class PygameAdapter(GameFrameworkBase):
 
     def get_screen_size(self):
         return pygame.display.Info()
+
+    def get_screen_x_y(self):
+        screen_size = self.get_screen_size()
+        return screen_size.current_w, screen_size.current_h
 
     def get_event(self):
         return pygame.event.get()
@@ -92,9 +97,12 @@ class PygameAdapter(GameFrameworkBase):
     def delay(self, ms):
         pygame.time.delay(ms)
 
-    def update_display(self):
+    def wait(self):
+        return pygame.event.wait()
+
+    def update_display(self, *args):
         # pygame.display.flip()
-        pygame.display.update()
+        pygame.display.update(*args)
 
     def bind_screen(self, sub_object, rect, *args):
         self.screen.blit(sub_object, rect, *args)
@@ -109,9 +117,14 @@ class PygameAdapter(GameFrameworkBase):
         for i in items:
             group.add(i)
 
-    def create_time_event(self, ms):
-        event_id = pygame.USEREVENT + 1
-        pygame.time.set_timer(event_id, ms)
+    def get_usable_event_id(self):
+        event_id = pygame.USEREVENT + self.event_count % 10
+        self.event_count += 1
+        return event_id
+
+    def create_time_event(self, ms, *args):
+        event_id = self.get_usable_event_id()
+        pygame.time.set_timer(event_id, ms, *args)
         return event_id
 
     def game_speed(self, frame_rate):
@@ -130,6 +143,24 @@ class PygameAdapter(GameFrameworkBase):
     def exit(self):
         pygame.quit()
         sys.exit()
+
+    def clean_event(self):
+        pygame.event.clear()
+
+    def block(self, type=None):
+        pygame.event.set_blocked(type)
+
+    def allow(self, type=None):
+        pygame.event.set_allowed(type)
+
+    def create_event_type(self):
+        return pygame.event.custom_type()
+
+    def create_event(self, *args):
+        return pygame.event.Event(*args)
+
+    def post_event(self, *args):
+        return pygame.event.post(*args)
 
 
 adapter = PygameAdapter()
