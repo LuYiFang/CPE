@@ -1,0 +1,1 @@
+pyinstaller --windowed -F --add-data "src/static/*;src/static/" --icon "src/static/icon.ico" --name "Enter Game" .\main.py
