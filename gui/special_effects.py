@@ -1,6 +1,7 @@
 from random import randint
 from time import time
 from engine.pygame_adapter import adapter
+import gui.images as img
 
 
 class HitSpark(adapter.collision_object()):
@@ -12,7 +13,7 @@ class HitSpark(adapter.collision_object()):
         size = 64
 
         self.surf, self.rect = adapter.load_image(
-            'src/static/hit_spark.png',
+            img.HIT_SPARK,
             topleft=(
                 pos_x,
                 pos_y
@@ -36,7 +37,7 @@ class RecoverShining(adapter.collision_object()):
         size = 64
 
         self.surf, self.rect = adapter.load_image(
-            'src/static/recover_shining.png',
+            img.RECOVER_SHINING,
             topleft=(
                 pos_x,
                 pos_y

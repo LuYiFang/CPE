@@ -5,6 +5,7 @@ from engine.pygame_adapter import (
 )
 from gui.special_effects import HitSpark, RecoverShining
 import gui.color as theme
+import gui.images as img
 
 
 class Boss(Character):
@@ -18,7 +19,7 @@ class Boss(Character):
         middle_x = screen_size.current_w / 2 - width / 2
 
         self.surf, self.rect = adapter.load_image(
-            'src/static/boss_normal.png',
+            img.BOSS_NORMAL,
             center=(
                 screen_size.current_w / 2,
                 screen_size.current_h / 2
@@ -26,7 +27,7 @@ class Boss(Character):
         )
 
         self.surf_hurt, self.rect_hurt = adapter.load_image(
-            'src/static/boss_hit.png',
+            img.BOSS_HIT,
             center=(
                 screen_size.current_w / 2,
                 screen_size.current_h / 2

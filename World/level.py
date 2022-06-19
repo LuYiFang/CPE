@@ -4,6 +4,7 @@ from characters.boss import Boss
 from characters.player import Player
 from engine.pygame_adapter import adapter, k
 from gui.special_effects import HintText
+import gui.images as img
 
 
 class LevelAbstract(ABC):
@@ -104,10 +105,10 @@ class LevelBase(LevelAbstract):
         return right_title, left_title, right_text, left_text
 
     def hint_title(self):
-        attack = HintText('src/static/attack.png', *self.right_title)
+        attack = HintText(img.ATTACK_HINT, *self.right_title)
         self.exclude_boss_sprites.add(attack)
 
-        recover = HintText('src/static/recover.png', *self.left_title)
+        recover = HintText(img.RECOVER_HINT, *self.left_title)
         self.exclude_boss_sprites.add(recover)
 
     def hint(self):
@@ -140,10 +141,10 @@ class LevelBase(LevelAbstract):
 
     def end_event(self):
         screen_size = adapter.get_screen_x_y()
-        img_url = 'src/static/you_die.png'
+        img_url = img.YOU_DIE
 
         if self.boss.is_dead():
-            img_url = 'src/static/you_win.png'
+            img_url = img.YOU_WIN
         end_background, _ = adapter.load_image(img_url)
         end_background = adapter.resize(end_background, screen_size)
         return end_background

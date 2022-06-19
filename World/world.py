@@ -11,6 +11,7 @@ from engine.pygame_adapter import adapter
 from gui.menu import Menu
 from gui.special_effects import CountNumber
 import gui.color as theme
+import gui.images as img
 
 
 class World:
@@ -65,9 +66,9 @@ class World:
     def set_countdown(self):
         countdown_event = adapter.create_time_event(1000, 4)
         countdown_surf = [
-            CountNumber('src/static/3.png'),
-            CountNumber('src/static/2.png'),
-            CountNumber('src/static/1.png'),
+            CountNumber(img.COUNTDOWN_3),
+            CountNumber(img.COUNTDOWN_2),
+            CountNumber(img.COUNTDOWN_1),
             CountNumber(None),
         ]
         return countdown_event, countdown_surf
