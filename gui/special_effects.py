@@ -27,6 +27,30 @@ class HitSpark(adapter.collision_object()):
             self.kill()
 
 
+class RecoverShining(adapter.collision_object()):
+    def __init__(self, boss_pos, boss_size):
+        super().__init__()
+
+        pos_x = randint(boss_pos[0], boss_pos[0] + boss_size[0])
+        pos_y = randint(boss_pos[1], boss_pos[1] + boss_size[1])
+        size = 64
+
+        self.surf, self.rect = adapter.load_image(
+            'src/static/recover_shining.png',
+            topleft=(
+                pos_x,
+                pos_y
+            ),
+        )
+        self.surf = adapter.resize(self.surf, (size, size))
+        self.flash_ms = 200 / 1000
+        self.timer = time()
+
+    def update(self):
+        if time() - self.timer >= self.flash_ms:
+            self.kill()
+
+
 class CountNumber(adapter.collision_object()):
     def __init__(self, img_url):
         super(CountNumber, self).__init__()
@@ -43,6 +67,20 @@ class CountNumber(adapter.collision_object()):
                 topleft=(middle_x, middle_y)
             )
             self.surf = adapter.resize(self.surf, (size, size))
+
+    def kill(self):
+        self.kill()
+
+
+class HintText(adapter.collision_object()):
+    def __init__(self, img_url, x, y, w, h):
+        super().__init__()
+
+        self.surf, self.rect = adapter.load_image(
+            img_url,
+            topleft=(x, y)
+        )
+        self.surf = adapter.resize(self.surf, (w, h))
 
     def kill(self):
         self.kill()

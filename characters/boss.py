@@ -3,7 +3,8 @@ from characters.base import Character
 from engine.pygame_adapter import (
     adapter,
 )
-from gui.special_effects import HitSpark
+from gui.special_effects import HitSpark, RecoverShining
+import gui.color as theme
 
 
 class Boss(Character):
@@ -39,10 +40,8 @@ class Boss(Character):
             self.speed_to_ms(self.recover_speed)
         )
 
-        self.hp_color = (250, 140, 22, 98)
-        self.hp_border_color = (227, 88, 9, 89)
-        # self.hp_rect, self.inner_pos = self.set_hp_bar()
-        # self.update_hp_bar()
+        self.hp_color = theme.ACCENT2
+        self.hp_border_color = theme.ACCENT2_DARK
 
         self.hp_rect_tmp = self.set_hp_bar_tmp((middle_x, 10), (width, 20))
         self.update_hp_tmp()
@@ -70,6 +69,10 @@ class Boss(Character):
         if time() - self.timer >= self.blink_rate:
             self.is_hit = False
 
+    def recover_special_effect(self):
+        shining = RecoverShining(self.rect.topleft, self.rect.size)
+        return shining
+
     def update(self):
         super().update()
         if not self.is_hit:
@@ -85,3 +88,5 @@ class Boss(Character):
             self.hp += self.heal_rate
             if self.hp > self.full_hp:
                 self.hp = self.full_hp
+            return self.recover_special_effect()
+

@@ -1,33 +1,26 @@
 import sys
 import pygame
-from pygame.locals import (
-    KEYDOWN,
-    KEYUP,
-    K_ESCAPE,
-    QUIT,
-    RLEACCEL,
-    K_RETURN,
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_c,
-)
+import pygame.locals as k
 import pygame_menu
 from pygame_menu.themes import THEME_SOLARIZED
 from engine.base import GameFrameworkBase
+import gui.color as theme
 
 
 class PygameAdapter(GameFrameworkBase):
     def __init__(self):
         self.screen = None
         self.screen_rgb = None
+        self.text_font = None
         self.event_count = 1
 
     def init(self):
         pygame.init()
+        pygame.font.init()
+        self.text_font = pygame.font.SysFont('Segoe UI', 34)
+        self.text_font.bold = True
 
-    def set_screen(self, width=800, height=600, rgb=(255, 255, 255)):
+    def set_screen(self, width=800, height=600, rgb=theme.WHITE):
         self.screen = pygame.display.set_mode((width, height))
         self.screen.fill(rgb)
         self.screen_rgb = rgb
@@ -52,14 +45,14 @@ class PygameAdapter(GameFrameworkBase):
         return pygame.key.get_pressed()
 
     def exit_game(self, event):
-        if event.type == KEYDOWN:
-            if event.key == K_ESCAPE:
+        if event.type == k.KEYDOWN:
+            if event.key == k.K_ESCAPE:
                 return False
-        elif event.type == QUIT:
+        elif event.type == k.QUIT:
             self.exit()
         return True
 
-    def create_surface(self, size, rgb=(255, 255, 255)):
+    def create_surface(self, size, rgb=theme.WHITE):
         surf = pygame.Surface(size)
         surf.fill(rgb)
         return surf, surf.get_rect()
@@ -70,14 +63,6 @@ class PygameAdapter(GameFrameworkBase):
     def create_rect(self, *args):
         return pygame.Rect(*args)
 
-    # def draw_hp_bar(self, inner_pos, inner_size, health_color):
-    #     # pygame.draw.rect(self.screen, back_color, (*pos, *size))
-    #     # pygame.draw.rect(self.screen, border_color, (*pos, *size), 1)
-    #     # inner_pos = (pos[0] + 1, pos[1] + 1)
-    #     rect = (round(inner_pos[0]), round(inner_pos[1]), round(inner_size[0]), round(inner_size[1]))
-    #     self.draw(health_color, *rect)
-    #     # pygame.draw.rect(self.screen, health_color, rect)
-
     def draw_health_bar(self, pos, size, borderC, backC, healthC, progress):
         pygame.draw.rect(self.screen, backC, (*pos, *size))
         pygame.draw.rect(self.screen, borderC, (*pos, *size), 1)
@@ -86,9 +71,9 @@ class PygameAdapter(GameFrameworkBase):
         rect = (round(innerPos[0]), round(innerPos[1]), round(innerSize[0]), round(innerSize[1]))
         pygame.draw.rect(self.screen, healthC, rect)
 
-    def load_image(self, path, rgb=(255, 255, 255), **kwargs):
+    def load_image(self, path, rgb=theme.WHITE, **kwargs):
         surf = pygame.image.load(path).convert()
-        surf.set_colorkey(rgb, RLEACCEL)
+        surf.set_colorkey(rgb, k.RLEACCEL)
         return surf, surf.get_rect(**kwargs)
 
     def resize(self, surface, size):
@@ -138,7 +123,7 @@ class PygameAdapter(GameFrameworkBase):
         return pygame_menu.Menu(title, width, height, **kwargs)
 
     def menu_exit(self):
-        pygame_menu.events.EXIT
+        return pygame_menu.events.EXIT
 
     def exit(self):
         pygame.quit()
@@ -161,6 +146,9 @@ class PygameAdapter(GameFrameworkBase):
 
     def post_event(self, *args):
         return pygame.event.post(*args)
+
+    def create_text(self, text, color=theme.TEXT):
+        return self.text_font.render(text, False, color)
 
 
 adapter = PygameAdapter()

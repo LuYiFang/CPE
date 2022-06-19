@@ -3,23 +3,26 @@ from World.level import (
     Level1,
     Level2,
     Level3,
+    Level4,
+    Level5,
 )
 
-from engine.pygame_adapter import adapter, KEYUP
+from engine.pygame_adapter import adapter
 from gui.menu import Menu
 from gui.special_effects import CountNumber
+import gui.color as theme
 
 
 class World:
     def __init__(self):
         self.current_difficulty = 1
         self.max_difficulty = 10
-        self.levels = [Level1, Level2, Level3]
+        self.levels = [Level1, Level2, Level3, Level4, Level5]
         self.max_level = len(self.levels)
         self.current_level = Level1
 
         adapter.init()
-        adapter.set_screen()
+        adapter.set_screen(rgb=theme.BACKGROUND)
         screen_size = adapter.get_screen_size()
         self.menu = Menu(
             screen_size.current_w, screen_size.current_h,
@@ -36,7 +39,6 @@ class World:
         self.run(level)
 
     def end_game(self):
-        print('End')
         adapter.clean_event()
         self.next_level()
         self.show_menu()
@@ -74,7 +76,7 @@ class World:
         running = True
         countdown_index = 0
         while running:
-
+            level.hint()
             if countdown_index == 0:
                 adapter.allow(self.countdown_event)
 

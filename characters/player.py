@@ -1,9 +1,7 @@
 from characters.base import Character
 from engine.pygame_adapter import (
     adapter,
-    K_RETURN,
-    KEYUP,
-    K_c,
+    k,
 )
 
 
@@ -26,10 +24,10 @@ class Player(Character):
         self.hp_rect_tmp = self.set_hp_bar_tmp((hp_x, hp_y), (width, height))
         self.update_hp_tmp()
 
-    def attack(self, event, target):
-        if event.type != KEYUP:
+    def attack(self, event, target, attack_key=k.K_RETURN):
+        if event.type != k.KEYUP:
             return None
-        if event.key == K_RETURN:
+        if event.key == attack_key:
             target.hp -= self.attack_power
             spark = target.be_hit()
             return spark
@@ -37,10 +35,11 @@ class Player(Character):
     def die(self):
         print('You die')
 
-    def recover(self, event):
-        if event.type != KEYUP:
+    def recover(self, event, recover_key=k.K_c):
+        if event.type != k.KEYUP:
             return None
-        if event.key == K_c:
+        if event.key == recover_key:
             self.hp += self.heal_rate
             if self.hp > self.full_hp:
                 self.hp = self.full_hp
+            return True
